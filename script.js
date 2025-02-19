@@ -8,8 +8,8 @@ let isEditMode = false;
 
 //loading items from local storage
 function displayItems(){
-    const itemsFromSrorage = getItemsFromStorage();
-    itemsFromSrorage.forEach((item) => addItemToDom(item));
+    const itemsFromStorage = getItemsFromStorage();
+    itemsFromStorage.forEach((item) => addItemToDom(item));
     checkUI();
 }
 
@@ -32,6 +32,11 @@ function onAddItemSubmit(e) {
         itemToEdit.classList.remove('edit-mode');
         itemToEdit.remove();
         isEditMode = false;
+    } else {
+        if(checkIfItemExists(newItem)) {
+            alert('Item Already Exists!');
+            return;
+        }
     }
     //create item dom element
     addItemToDom(newItem);
@@ -79,9 +84,9 @@ function createIcon(classes) {
 function addItemToStorage(item) {
     let itemsFromStorage = getItemsFromStorage();
     // if(localStorage.getItem('items') === null) {
-    //     itemsFromSrorage = [];
+    //     itemsFromStorage = [];
     // } else {
-    //     itemsFromSrorage = JSON.parse(localStorage.getItem('items'));
+    //     itemsFromStorage = JSON.parse(localStorage.getItem('items'));
     // }
 
     //Add new item into array of existing storage or empty storage
@@ -93,7 +98,7 @@ function addItemToStorage(item) {
 
 
 function getItemsFromStorage(item) {
-    let itemsFromSrorage;
+    let itemsFromStorage;
     if(localStorage.getItem('items') === null) {
         itemsFromStorage = [];
     } else {
@@ -106,9 +111,14 @@ function getItemsFromStorage(item) {
 function onClickItem(e) {
     if(e.target.parentElement.classList.contains('remove-item')) {
         removeItem(e.target.parentElement.parentElement);
-    }else {
+    }else if (e.target.tagName === 'LI'){
         setItemToEdit(e.target)
     }
+}
+
+function checkIfItemExists(item) {
+    const itemsFromStorage = getItemsFromStorage();
+    return itemsFromStorage.includes(item);
 }
 
 function setItemToEdit(item) {
